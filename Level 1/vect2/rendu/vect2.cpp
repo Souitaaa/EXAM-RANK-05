@@ -1,125 +1,147 @@
 #include "vect2.hpp"
 
-vect2::vect2() : x(0), y(0) {}
+vect2::vect2() : m_x(0), m_y(0) {};
 
-vect2::vect2(int x, int y) : x(x), y(y) {}
+vect2::vect2(int x, int y) : m_x(x), m_y(y) {};
 
-vect2::vect2(const vect2& copy) : x(copy.x), y(copy.y) {}
+vect2::vect2(const vect2 &copy) : m_x(copy.m_x), m_y(copy.m_y) {};
 
-vect2&	vect2::operator=(const vect2& copy)
+vect2::~vect2() {};
+
+vect2 &vect2::operator=(const vect2 &other)
 {
-	if (this != &copy)
-	{
-		x = copy.x;
-		y = copy.y;
-	}
-	return (*this);
+    if (this != &other)
+    {
+        m_x = other.m_x;
+        m_y = other.m_y;
+    }
+    return *this;
 }
 
-int&	vect2::operator[](int i)
+bool vect2::operator==(const vect2 &other) const
 {
-	if (i == 0)
-		return (x);
-	else
-		return (y);
+    if (this->m_x == other.m_x && this->m_y == other.m_y)
+        return true;
+    return false;
 }
 
-int		vect2::operator[](int i) const
+bool vect2::operator!=(const vect2 &other) const
 {
-	if (i == 0)
-		return (x);
-	else
-		return (y);
+    if (*this == other)
+        return false;
+    return true;
 }
 
-vect2&	vect2::operator++()
+std::ostream &operator<<(std::ostream &os, const vect2 &v)
 {
-	x++;
-	y++;
-	return (*this);
+    os << "{" << v.m_x << ", " << v.m_y << "}";
+    return os;
 }
 
-vect2	vect2::operator++(int)
+int &vect2::operator[](int i)
 {
-	vect2	tmp = *this;
-	x++;
-	y++;
-	return (tmp);
+    if (i == 0)
+        return m_x;
+    else if (i == 1)
+        return m_y;
+    else
+        throw std::out_of_range("out of bound vect2");
 }
 
-vect2&	vect2::operator--()
+const int &vect2::operator[](int i) const
 {
-	x--;
-	y--;
-	return (*this);
+    if (i == 0)
+        return m_x;
+    else if (i == 1)
+        return m_y;
+    else
+        throw std::out_of_range("out of bound vect2");
 }
 
-vect2	vect2::operator--(int)
+vect2 vect2::operator+(const vect2 &other) const
 {
-	vect2	tmp = *this;
-	x--;
-	y--;
-	return (tmp);
+    int x = this->m_x + other.m_x;
+    int y = this->m_y + other.m_y;
+
+    return (vect2(x, y));
 }
 
-vect2&	vect2::operator+=(const vect2& v)
+vect2 vect2::operator-(const vect2 &other) const
 {
-	x += v.x;
-	y += v.y;
-	return (*this);
+    int x = this->m_x - other.m_x;
+    int y = this->m_y - other.m_y;
+
+    return (vect2(x, y));
 }
 
-vect2&	vect2::operator-=(const vect2& v)
+vect2 vect2::operator*(const int scalar) const
 {
-	x -= v.x;
-	y -= v.y;
-	return (*this);
+    int x = this->m_x * scalar;
+    int y = this->m_y * scalar;
+
+    return vect2(x, y);
 }
 
-vect2&	vect2::operator*=(int s)
+vect2 operator*(const int scalar, const vect2 &other)
 {
-	x *= s;
-	y *= s;
-	return (*this);
+    return (other * scalar);
 }
 
-vect2	vect2::operator+(const vect2& v) const
+vect2 &vect2::operator+=(const vect2 &other)
 {
-	return (vect2(x + v.x, y + v.y));
+    *this = *this + other;
+    return *this;
 }
 
-vect2	vect2::operator-(const vect2& v) const
+vect2 &vect2::operator-=(const vect2 &other)
 {
-	return (vect2(x - v.x, y - v.y));
+    *this = *this - other;
+    return *this;
 }
 
-vect2	vect2::operator*(int s) const
+vect2 &vect2::operator*=(const int scalar)
 {
-	return (vect2(x * s, y * s));
+    *this = *this * scalar;
+    return *this;
 }
 
-vect2	vect2::operator-() const
+vect2 vect2::operator+() const
 {
-	return (vect2(-x, -y));
+    return *this;
 }
 
-vect2	operator*(int s, const vect2& v)
+vect2 vect2::operator-() const
 {
-	return (vect2(v.x * s, v.y * s));
+    return vect2(-m_x, -m_y);
 }
 
-bool	vect2::operator==(const vect2& v) const
+vect2 &vect2::operator++()
 {
-	return (x == v.x && y == v.y);
+    m_x++;
+    m_y++;
+    return *this;
 }
 
-bool	vect2::operator!=(const vect2& v) const
+vect2 vect2::operator++(int)
 {
-	return (!(x == v.x && y == v.y));
+    vect2 old = *this;
+    m_x++;
+    m_y++;
+    return old;
 }
 
-std::ostream& operator<<(std::ostream& os, const vect2& v)
+vect2 &vect2::operator--()
 {
-	os << "{" << v[0] << ", " << v[1] << "}";	
-	return (os);
+    m_x--;
+    m_y--;
+
+    return *this;
+}
+
+vect2 vect2::operator--(int)
+{
+    vect2 old = *this;
+    m_x--;
+    m_y--;
+    return old;
 }
